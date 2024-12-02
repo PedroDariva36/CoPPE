@@ -1,4 +1,4 @@
-export const problems = [
+export const problemsList = [
   {
     code: "590B",
     name: "Painting Pebbles",
@@ -71,9 +71,13 @@ export const problems = [
     link: "https://codeforces.com/contest/2031/problem/B",
     dificulty: 900
   }
+
   ,{
     code: "Test",
+    name: "Test",
     local: "Test",
+    dificulty: 3000,
+    link: "www.test.com",
     tags: ["Dynamic Programming","Number Theory", "Greedy", "Sorting", "Graphs", "Bitmasks", "Brute Force", "Strings", "Two Pointers", "MEX", "Permutation"]
   }
 ]
