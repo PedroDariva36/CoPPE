@@ -14,10 +14,10 @@
         <v-btn icon @click="eMode = !eMode">
 
         <template v-if = "eMode">
-          <v-icon>mdi-wrench</v-icon>
+          <v-icon>mdi-check-circle</v-icon>
         </template>
         <template v-else>
-          <v-icon>mdi-cog</v-icon>
+          <v-icon>mdi-checkbox-blank-circle-outline</v-icon>
         </template>
       </v-btn>
 
@@ -182,7 +182,7 @@
             <v-btn
                 text="Cancel"
                 variant="tonal"
-                @click="dialog = false"
+                @click="dialog = false, resetDialog()"
                 ></v-btn>
 
             <v-btn
@@ -207,7 +207,7 @@
   const dialog = ref(false);
   const eMode = ref(false);
   const origins = ref(["Codeforces", "Spoj", "Uva", "Beecrowd", "AtCoder", "Vjudge"]);
-  const indexDialog = ref(-1);
+  let indexDialog = -1;
 
   const objDialog = ref({
       dificulty: 800,
@@ -232,8 +232,8 @@
   const headers = ref([
       { align: 'start', key: 'code', title: 'Code'},
       { key: 'name', title: 'Name'},
-      { key: 'local', title: 'From' },
-      { key: 'tags', title: 'Tags' },
+      { key: 'local', title: 'From', sortable: false },
+      { key: 'tags', title: 'Tags', sortable: false },
       { key: 'dificulty', title: 'Dificulty' },
       { key: 'actions', sortable: false }
   ]);
@@ -262,18 +262,19 @@
   let sepTags = [...tags.keys()];
 
   function saveDialog(){
-      if(indexDialog.value == -1) problems.value.push(objDialog.value);
-      else Object.assign(problems.value[indexDialog.value], objDialog.value);
+      if(indexDialog == -1) problems.value.push(objDialog.value);
+      else Object.assign(problems.value[indexDialog], objDialog.value);
       resetDialog();
   }
 
   function resetDialog(){
-      objDialog.value = defaultDialog;
+      indexDialog = -1;
+      Object.assign(objDialog.value, defaultDialog);
   }
 
   function getItem(item){
-      indexDialog.value = problems.value.indexOf(item);
-      Object.assign(objDialog.value, problems.value[indexDialog.value]);
+      indexDialog = problems.value.indexOf(item);
+      Object.assign(objDialog.value, problems.value[indexDialog]);
   }
 
   function getColorDif(rating) {
@@ -290,8 +291,8 @@
   }
 
   function dl(){
-      const filename = 'problemsList.js';
-      const jsonStr = JSON.stringify(problems.value);
+      const filename = 'problems.js';
+      const jsonStr = "export const problemsList = " + JSON.stringify(problems.value);
       let element = document.createElement('a');
       element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(jsonStr));
       element.setAttribute('download', filename);
