@@ -71,7 +71,7 @@ export const problemsList = [
     link: "https://codeforces.com/contest/2031/problem/B",
     dificulty: 900
   }
-
+  /*
   ,{
     code: "Test",
     name: "Test",
@@ -80,6 +80,7 @@ export const problemsList = [
     link: "www.test.com",
     tags: ["Dynamic Programming","Number Theory", "Greedy", "Sorting", "Graphs", "Bitmasks", "Brute Force", "Strings", "Two Pointers", "MEX", "Permutation"]
   }
+  */
 ]
 
 
