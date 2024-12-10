@@ -1,27 +1,34 @@
 <template>
-  <v-container class = "bg-variant"> <!-- d-flex flex-column fill-height justify-center align-center " > -->
-    <v-app-bar :elevation="0">
+  <div >
+  <v-container class = "bg-variant">
+    <!-- d-flex flex-column fill-height justify-center align-center " > -->
+    <v-app-bar class = "bg-transparent" :elevation="0" >
       <v-app-bar-title>
       <!--
         <p class="font-weight-bold text-sm-h2 text-h4 mt-2'"> CoPPE</p> <span class="font-weight-medium text-primary">Competitive Programing Problem Enumerator</span> --> CoPPE </v-app-bar-title>
       <template v-slot:append>
 
-        <template v-if = "eMode">
-          <v-btn icon @click="dialog = true"> <v-icon>mdi-plus</v-icon> </v-btn>
-          <v-btn icon @click="dl()"> <v-icon>mdi-export</v-icon> </v-btn>
-        </template>
+        <v-expand-x-transition>
+          <v-responsive class = "rounded-xl" >
+            <v-expand-transition>
+              <v-btn v-show = "eMode" icon @click="dialog = true"> <v-icon>mdi-plus</v-icon> </v-btn>
+            </v-expand-transition>
+            <v-expand-transition>
+              <v-btn v-show = "eMode" icon @click="dl()"> <v-icon>mdi-export</v-icon> </v-btn>
+            </v-expand-transition>
 
-        <v-btn icon @click="eMode = !eMode">
+            <v-btn icon @click="eMode = !eMode">
+              <template v-if = "eMode">
+                <v-icon>mdi-check-circle</v-icon>
+              </template>
+              <template v-else>
+                <v-icon>mdi-checkbox-blank-circle-outline</v-icon>
+              </template>
+            </v-btn>
 
-        <template v-if = "eMode">
-          <v-icon>mdi-check-circle</v-icon>
-        </template>
-        <template v-else>
-          <v-icon>mdi-checkbox-blank-circle-outline</v-icon>
-        </template>
-      </v-btn>
-
-</template>
+          </v-responsive>
+        </v-expand-x-transition>
+      </template>
     </v-app-bar>
 
     <!-- -->
@@ -69,7 +76,7 @@
                 size="small"
                 @click="dialog = true, getItem(item)"
                 >
-                mdi-cog
+                mdi-table-edit
             </v-icon>
           </template>
 
@@ -193,14 +200,15 @@
           </v-card-actions>
       </v-card>
     </v-dialog>
+
   </v-container>
-
-
+  </div>
 </template>
 <script setup lang="ts">
   import { VNumberInput } from 'vuetify/labs/VNumberInput';
   import { problemsList } from "../problems.js";
-  import { ref } from 'vue';
+  import { ref, toRaw  } from 'vue';
+
 
   const problems = ref([...problemsList]);
 
@@ -209,14 +217,6 @@
   const origins = ref(["Codeforces", "Spoj", "Uva", "Beecrowd", "AtCoder", "Vjudge"]);
   let indexDialog = -1;
 
-  const objDialog = ref({
-      dificulty: 800,
-      code: "",
-      local: [],
-      link: "",
-      name: "",
-      tags: []
-  });
 
   let defaultDialog = {
       dificulty: 800,
@@ -227,6 +227,14 @@
       tags: []
   };
 
+  const objDialog = ref({
+      dificulty: 800,
+      code: "",
+      local: [],
+      link: "",
+      name: "",
+      tags: []
+  });
 
   const search = ref ('');
   const headers = ref([
@@ -258,23 +266,27 @@
   tags.set('Two Pointers', 'lime-accent-3');
   tags.set('Sorting', 'light-green-accent-4');
 
+
+
   //tags
   let sepTags = [...tags.keys()];
 
   function saveDialog(){
-      if(indexDialog == -1) problems.value.push(objDialog.value);
-      else Object.assign(problems.value[indexDialog], objDialog.value);
+      if(indexDialog == -1)
+        problems.value.push(JSON.parse(JSON.stringify(toRaw(objDialog.value))));
+      else
+        problems.value[indexDialog] = JSON.parse(JSON.stringify(toRaw(objDialog.value)))
       resetDialog();
   }
 
   function resetDialog(){
       indexDialog = -1;
-      Object.assign(objDialog.value, defaultDialog);
+      objDialog.value = JSON.parse(JSON.stringify(toRaw(defaultDialog)));
   }
 
   function getItem(item){
       indexDialog = problems.value.indexOf(item);
-      Object.assign(objDialog.value, problems.value[indexDialog]);
+      objDialog.value = JSON.parse(JSON.stringify(toRaw(problems.value[indexDialog])));
   }
 
   function getColorDif(rating) {
