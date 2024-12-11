@@ -1,90 +1,90 @@
 <template>
-  <div >
-  <v-container class = "bg-variant">
-    <!-- d-flex flex-column fill-height justify-center align-center " > -->
-    <v-app-bar class = "bg-transparent" :elevation="0" >
-      <v-app-bar-title>
-      <!--
-        <p class="font-weight-bold text-sm-h2 text-h4 mt-2'"> CoPPE</p> <span class="font-weight-medium text-primary">Competitive Programing Problem Enumerator</span> --> CoPPE </v-app-bar-title>
-      <template v-slot:append>
+  <v-toolbar color="transparent" :elevation="0" >
 
-        <v-expand-x-transition>
-          <v-responsive class = "rounded-xl" >
-            <v-expand-transition>
-              <v-btn v-show = "eMode" icon @click="dialog = true"> <v-icon>mdi-plus</v-icon> </v-btn>
-            </v-expand-transition>
-            <v-expand-transition>
-              <v-btn v-show = "eMode" icon @click="dl()"> <v-icon>mdi-export</v-icon> </v-btn>
-            </v-expand-transition>
+    <v-toolbar-title>
+      CoPPE
+    </v-toolbar-title>
 
-            <v-btn icon @click="eMode = !eMode">
-              <template v-if = "eMode">
-                <v-icon>mdi-check-circle</v-icon>
-              </template>
-              <template v-else>
-                <v-icon>mdi-checkbox-blank-circle-outline</v-icon>
-              </template>
-            </v-btn>
+    <template v-slot:append>
 
-          </v-responsive>
-        </v-expand-x-transition>
-      </template>
-    </v-app-bar>
+      <v-expand-x-transition>
+        <v-responsive class = "rounded-xl" >
+          <v-expand-transition>
+            <v-btn v-show = "eMode" icon @click="dialog = true"> <v-icon>mdi-plus</v-icon> </v-btn>
+          </v-expand-transition>
+          <v-expand-transition>
+            <v-btn v-show = "eMode" icon @click="dl()"> <v-icon>mdi-export</v-icon> </v-btn>
+          </v-expand-transition>
 
+          <v-btn icon @click="eMode = !eMode">
+            <template v-if = "eMode">
+              <v-icon>mdi-check-circle</v-icon>
+            </template>
+            <template v-else>
+              <v-icon>mdi-checkbox-blank-circle-outline</v-icon>
+            </template>
+          </v-btn>
+
+        </v-responsive>
+      </v-expand-x-transition>
+    </template>
+  </v-toolbar>
+
+  <v-container class = 'bg-transparent' >
     <!-- -->
-      <v-card flat>
-        <template v-slot:text>
-          <v-text-field
-              v-model="search"
-              label="Search"
-              prepend-inner-icon="mdi-magnify"
-              variant="outlined"
-              hide-details
-              single-line
-          ></v-text-field>
+    <v-card flat>
+      <template v-slot:text>
+        <v-text-field
+            v-model="search"
+            label="Search"
+            prepend-inner-icon="mdi-magnify"
+            variant="outlined"
+            hide-details
+            single-line
+            ></v-text-field>
+      </template>
+
+      <v-data-table :expand = "true" :headers="headers" :items="problems" :search="search">
+        <template #item.local= "{item}">
+          <a target="_blank" :href="item.link"> {{ item.local }} </a>
         </template>
 
-        <v-data-table :expand = "true" :headers="headers" :items="problems" :search="search">
-          <template #item.local= "{item}">
-            <a target="_blank" :href="item.link"> {{ item.local }} </a>
-          </template>
+        <template #item.tags="{ item }" >
+          <v-sheet class="py-2">
+            <v-responsive class="overflow-y-auto , ga-2" max-width = 350>
+              <v-row no-gutters class="ga-2">
+                <template v-for="i in item.tags" :key="i">
+                  <v-chip
+                      :color ="getColorTag(i)"
+                      :text="i"
+                      ></v-chip>
+                </template>
+              </v-row>
+            </v-responsive>
+          </v-sheet>
+        </template>
 
-          <template #item.tags="{ item }" >
-            <v-sheet class="py-2">
-                <v-responsive class="overflow-y-auto , ga-2" max-width = 350>
-                  <v-row no-gutters class="ga-2">
-                  <template v-for="i in item.tags" :key="i">
-                    <v-chip
-                        :color ="getColorTag(i)"
-                        :text="i"
-                        ></v-chip>
-                  </template>
-                  </v-row>
-                </v-responsive>
-            </v-sheet>
-          </template>
-
-          <template #item.dificulty = "{ item }">
-            <v-chip label :color = "getColorDif(item.dificulty)" >
-              {{ item.dificulty }}
-            </v-chip>
-          </template>
+        <template #item.dificulty = "{ item }">
+          <v-chip label :color = "getColorDif(item.dificulty)" >
+            {{ item.dificulty }}
+          </v-chip>
+        </template>
 
 
-          <template v-if="eMode" #item.actions ="{item}">
-            <v-icon
-                size="small"
-                @click="dialog = true, getItem(item)"
-                >
-                mdi-table-edit
-            </v-icon>
-          </template>
+        <template v-if="eMode" #item.actions ="{item}">
+          <v-icon
+              size="small"
+              @click="dialog = true, getItem(item)"
+              >
+              mdi-table-edit
+          </v-icon>
+        </template>
 
-        </v-data-table>
-      </v-card>
+      </v-data-table>
+    </v-card>
 
 
-      <!-- MODAL -->
+    <!-- MODAL -->
     <v-dialog v-model="dialog" max-width = 800>
       <v-card
           prepend-icon="mdi-update"
@@ -101,23 +101,23 @@
                     >
                 </v-text-field>
               </v-col>
-              <v-col cols="3">
-                <v-select
-                    v-model = "objDialog.local"
-                    single-line
-                    :items="origins"
-                    label="Origin"
-                    required
-                  ></v-select>
-              </v-col>
-              <v-col cols="6">
-                <v-text-field
-                  v-model="objDialog.name"
-                  label="Name"
-                  required
-                  >
-                </v-text-field>
-              </v-col>
+        <v-col cols="3">
+          <v-select
+              v-model = "objDialog.local"
+              single-line
+              :items="origins"
+              label="Origin"
+              required
+              ></v-select>
+        </v-col>
+        <v-col cols="6">
+          <v-text-field
+              v-model="objDialog.name"
+              label="Name"
+              required
+              >
+          </v-text-field>
+        </v-col>
             </v-row>
 
             <v-row dense >
@@ -156,7 +156,7 @@
                           ></v-number-input>
                     </template>
                 </v-slider>
-                </v-col >
+              </v-col >
             </v-row>
             <v-row dense>
               <v-divider></v-divider>
@@ -202,8 +202,17 @@
     </v-dialog>
 
   </v-container>
-  </div>
 </template>
+<style>
+
+.v-application{
+  background: url("/wallhaven-76v35o_1920x1080.png") no-repeat center center fixed !important;
+  background-size: cover !important;
+}
+
+
+</style>
+
 <script setup lang="ts">
   import { VNumberInput } from 'vuetify/labs/VNumberInput';
   import { problemsList } from "../problems.js";
@@ -265,8 +274,10 @@
   tags.set('Greedy', 'green-accent-4');
   tags.set('Two Pointers', 'lime-accent-3');
   tags.set('Sorting', 'light-green-accent-4');
-
-
+  tags.set('Implementation', 'light-blue');
+  tags.set('Suffixes', 'cyan-accent-1');
+  tags.set('Prefixes', 'cyan-accent-1');
+  tags.set('Game Theory', 'cyan-accent-1');
 
   //tags
   let sepTags = [...tags.keys()];
