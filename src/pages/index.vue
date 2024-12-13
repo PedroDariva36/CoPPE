@@ -1,9 +1,10 @@
 <template>
-  <v-toolbar color="transparent" :elevation="0" >
 
-    <v-toolbar-title>
-      CoPPE
+  <v-toolbar color="transparent" :elevation="0" >
+    <v-toolbar-title  style = "font-family: 'JetBrains Mono'">
+      <span class = "gradient-text">CoPPE</span>
     </v-toolbar-title>
+
 
     <template v-slot:append>
 
@@ -32,7 +33,8 @@
 
   <v-container class = 'bg-transparent' >
     <!-- -->
-    <v-card flat>
+    <v-card flat class = "tr_back" >
+
       <template v-slot:text>
         <v-text-field
             v-model="search"
@@ -44,13 +46,13 @@
             ></v-text-field>
       </template>
 
-      <v-data-table :expand = "true" :headers="headers" :items="problems" :search="search">
+      <v-data-table class = 'bg-transparent'  :expand = "true" :headers="headers" :items="problems" :search="search">
         <template #item.local= "{item}">
           <a target="_blank" :href="item.link"> {{ item.local }} </a>
         </template>
 
         <template #item.tags="{ item }" >
-          <v-sheet class="py-2">
+          <v-sheet class="py-2 bg-transparent">
             <v-responsive class="overflow-y-auto , ga-2" max-width = 350>
               <v-row no-gutters class="ga-2">
                 <template v-for="i in item.tags" :key="i">
@@ -76,6 +78,7 @@
               size="small"
               @click="dialog = true, getItem(item)"
               >
+      <v-progress-circular indeterminate size="64" />
               mdi-table-edit
           </v-icon>
         </template>
@@ -202,22 +205,59 @@
     </v-dialog>
 
   </v-container>
+
 </template>
 <style>
 
 .v-application{
-  background: url("/wallhaven-76v35o_1920x1080.png") no-repeat center center fixed !important;
+  background-image: linear-gradient(0deg, rgba(18, 18, 18, 0.5), rgba(18, 18, 18, 0.5)), url("/wallhaven-76v35o_1920x1080_blured.png") !important;
+  background-repeat:no-repeat !important;
+  background-position: center center !important;
+  background-attachment: fixed;
   background-size: cover !important;
 }
+
+.gradient-text {
+  /* Fallback: Set a background color. */
+  font-size: 22px;
+  background-color:#cfc9c2;
+  background-image: linear-gradient(
+    45deg,
+    #9ece6a,
+    #73daca,
+    #b4f9f8,
+    #2ac3de,
+    #7dcfff,
+  );
+
+  background-size: 100%;
+  background-repeat: repeat;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  -moz-background-clip: text;
+  -moz-text-fill-color: transparent;
+}
+
+.tr_back{
+  background: rgba(18,18,18,0.7)  !important;
+}
+
+.v_data-talbe__tr{
+  background: rgba(18,18,18,0.0)  !important;
+}
+
 
 
 </style>
 
 <script setup lang="ts">
+
   import { VNumberInput } from 'vuetify/labs/VNumberInput';
   import { problemsList } from "../problems.js";
   import { ref, toRaw  } from 'vue';
 
+
+  const blur = ref(true);
 
   const problems = ref([...problemsList]);
 
