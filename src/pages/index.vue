@@ -22,7 +22,7 @@
               <v-icon>mdi-check-circle</v-icon>
             </template>
             <template v-else>
-              <v-icon>mdi-checkbox-blank-circle-outline</v-icon>
+              <v-icon>mdi-pencil-circle-outline</v-icon>
             </template>
           </v-btn>
 
@@ -31,9 +31,9 @@
     </template>
   </v-toolbar>
 
-  <v-container class = 'bg-transparent' >
+  <v-container class = 'bg-transparent ' >
     <!-- -->
-    <v-card flat class = "tr_back" >
+    <v-card flat class = "tr_back mx-auto" max-width = 75vw >
 
       <template v-slot:text>
         <v-text-field
@@ -46,7 +46,7 @@
             ></v-text-field>
       </template>
 
-      <v-data-table class = 'bg-transparent'  :expand = "true" :headers="headers" :items="problems" :search="search">
+      <v-data-table  class = 'bg-transparent'  :expand = "true" :headers="headers" :items="problems" :search="search">
         <template #item.local= "{item}">
           <a target="_blank" :href="item.link"> {{ item.local }} </a>
         </template>
@@ -73,14 +73,17 @@
         </template>
 
 
-        <template v-if="eMode" #item.actions ="{item}">
-          <v-icon
-              size="small"
-              @click="dialog = true, getItem(item)"
-              >
-      <v-progress-circular indeterminate size="64" />
-              mdi-table-edit
-          </v-icon>
+        <template  #item.actions ="{item}">
+
+          <v-expand-transition>
+            <v-icon v-show="eMode"
+                    size="large"
+                    @click="dialog = true, getItem(item)"
+                    >
+
+                      mdi-pencil-circle-outline
+            </v-icon>
+          </v-expand-transition>
         </template>
 
       </v-data-table>
@@ -134,31 +137,40 @@
 
             <v-row dense>
               <v-col cols = "12" class = "align-center pa-4 ">
-                <v-slider
-                    v-model="objDialog.dificulty"
-                    tick-size="5"
-                    :step="100"
-                    :max="3000"
-                    :min="800"
-                    hide-details
-                    :color = "getColorDif(objDialog.dificulty)"
-                    >
-                    <template v-slot:append>
-                      <v-number-input
-                          v-model="objDialog.dificulty"
-                          density="compact"
-                          controlVariant="stacked"
-                          :max="3000"
-                          :min="800"
-                          :step="100"
-                          variant="outlined"
-                          style="width: 120px"
-                          type="number"
-                          hide-details
-                          single-line
-                          ></v-number-input>
-                    </template>
-                </v-slider>
+                <v-card flat class = "bg-surface">
+                  <v-card-item>
+                    <v-card-subtitle>
+                      Dificulty
+                    </v-card-subtitle>
+                  </v-card-item>
+                  <v-card-text>
+                    <v-slider
+                        v-model="objDialog.dificulty"
+                        tick-size="5"
+                        :step="100"
+                        :max="3000"
+                        :min="800"
+                        hide-details
+                        :color = "getColorDif(objDialog.dificulty)"
+                        >
+                        <template v-slot:append>
+                          <v-number-input
+                              v-model="objDialog.dificulty"
+                              density="compact"
+                              controlVariant="stacked"
+                              :max="3000"
+                              :min="800"
+                              :step="100"
+                              variant="outlined"
+                              style="width: 120px"
+                              type="number"
+                              hide-details
+                              single-line
+                              ></v-number-input>
+                        </template>
+                    </v-slider>
+                  </v-card-text>
+                </v-card>
               </v-col >
             </v-row>
             <v-row dense>
@@ -220,22 +232,6 @@
 .gradient-text {
   /* Fallback: Set a background color. */
   font-size: 22px;
-  background-color:#cfc9c2;
-  background-image: linear-gradient(
-    45deg,
-    #9ece6a,
-    #73daca,
-    #b4f9f8,
-    #2ac3de,
-    #7dcfff,
-  );
-
-  background-size: 100%;
-  background-repeat: repeat;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  -moz-background-clip: text;
-  -moz-text-fill-color: transparent;
 }
 
 .tr_back{
